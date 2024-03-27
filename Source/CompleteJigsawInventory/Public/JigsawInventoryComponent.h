@@ -18,7 +18,14 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-public:
+private:
 
+	UPROPERTY(EditAnywhere)
+	int32 TotalSlots = 20;
+
+	UPROPERTY(EditAnywhere)
+	int32 MaxSlotsPerRow = 5;
+
+	
 	
 };

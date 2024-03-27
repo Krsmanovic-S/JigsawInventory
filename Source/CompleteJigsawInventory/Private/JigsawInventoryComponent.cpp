@@ -6,7 +6,8 @@
 
 UJigsawInventoryComponent::UJigsawInventoryComponent()
 {
-	PrimaryComponentTick.bCanEverTick = true;
+	PrimaryComponentTick.bCanEverTick = false;
+	SetIsReplicatedByDefault(true);
 }
 
 void UJigsawInventoryComponent::BeginPlay()
