@@ -29,5 +29,7 @@ USTRUCT(BlueprintType)
 struct FItemStruct : public FTableRowBase
 {
 	GENERATED_BODY()
-	
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Item Properties")
+	FString Name = "None";
 };

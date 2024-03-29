@@ -6,6 +6,7 @@
 #include "Components/ActorComponent.h"
 #include "JigsawInventoryComponent.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FInventoryUpdated);
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class COMPLETEJIGSAWINVENTORY_API UJigsawInventoryComponent : public UActorComponent
@@ -26,6 +27,9 @@ private:
 	UPROPERTY(EditAnywhere)
 	int32 MaxSlotsPerRow = 5;
 
-	
+public:
+
+	UPROPERTY(BlueprintCallable, Category = "Jigsaw Inventory Component")
+	FInventoryUpdated OnInventoryUpdated;
 	
 };
