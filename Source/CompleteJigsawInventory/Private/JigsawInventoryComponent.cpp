@@ -13,4 +13,13 @@ UJigsawInventoryComponent::UJigsawInventoryComponent()
 void UJigsawInventoryComponent::BeginPlay()
 {
 	Super::BeginPlay();
+	
+	CurrentItems.SetNum(TotalSlots, false);
+
+	AddStartupItems();
+}
+
+void UJigsawInventoryComponent::AddStartupItems()
+{
+	
 }

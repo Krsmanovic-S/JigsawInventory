@@ -7,6 +7,8 @@
 #include "JigsawInventoryWidget.generated.h"
 
 class UJigsawInventoryComponent;
+class UUniformGridPanel;
+class UInventorySlotWidget;
 
 /**
  * 
@@ -21,11 +23,25 @@ public:
 	virtual void NativeConstruct() override;
 
 	UFUNCTION(BlueprintCallable, Category = "Jigsaw Inventory Widget")
-	void InitializeInventoryWidget();
+	void InitializeInventoryWidget(UJigsawInventoryComponent* InInventoryComp);
 
+	UFUNCTION()
+	void RefreshAllSlots();
+
+protected:
+
+	void ConstructInitialSlots();
+
+	void ConstructUseDefinitions();
+	
 private:
 	
-	TObjectPtr<UJigsawInventoryComponent> InventoryComponent;
+	TObjectPtr<UJigsawInventoryComponent> InventoryComp;
 
-	
+	/* Grid where all the slots are added */
+	UPROPERTY(BlueprintReadWrite, Category = "Inventory Widget", meta = (BindWidget, AllowPrivateAccess = true))
+	TObjectPtr<UUniformGridPanel> InventoryGrid;
+
+	UPROPERTY()
+	TArray<TObjectPtr<UInventorySlotWidget>> InventorySlots;
 };

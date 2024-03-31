@@ -1,9 +1,9 @@
 // Copyright 2024 Stefan Krsmanovic. All Rights Reserved.
 
 
-#include "Widgets/InventorySlot.h"
+#include "Widgets/InventorySlotWidget.h"
 
-void UInventorySlot::NativeConstruct()
+void UInventorySlotWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 }
