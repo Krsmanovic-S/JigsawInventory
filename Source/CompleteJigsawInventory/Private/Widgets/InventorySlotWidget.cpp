@@ -2,8 +2,12 @@
 
 
 #include "Widgets/InventorySlotWidget.h"
+#include "Widgets/ItemDisplayWidget.h"
 
 void UInventorySlotWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 }
+
+
+

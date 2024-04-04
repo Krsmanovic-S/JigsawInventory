@@ -4,9 +4,11 @@
 #include "Widgets/JigsawInventoryWidget.h"
 
 #include "JigsawInventoryComponent.h"
+#include "Components/MenuAnchor.h"
 #include "Components/UniformGridPanel.h"
 #include "Data/JigsawInventoryInfo.h"
 #include "Widgets/InventorySlotWidget.h"
+#include "Widgets/ItemDisplayWidget.h"
 
 void UJigsawInventoryWidget::NativeConstruct()
 {
@@ -45,7 +47,29 @@ void UJigsawInventoryWidget::InitializeInventoryWidget(UJigsawInventoryComponent
 
 void UJigsawInventoryWidget::RefreshAllSlots()
 {
-	
+	for(int i = 0; i < InventoryComp->GetBasicSlotAmount(); i++)
+	{
+		UInventorySlotWidget* CurrentSlot = InventorySlots[i];
+
+		CurrentSlot->SlotItem = InventoryComp->GetCurrentItems()[i];
+		
+		if(CurrentSlot->SlotItem.IsValid() && !CurrentSlot->IsDisplayWidgetActive)
+		{
+			CurrentSlot->SlotMenuAnchor->Open(false);
+
+			UE_LOG(LogTemp, Warning, TEXT("opened menu"));
+
+			for(int j = i; j < CurrentSlot->SlotItem.ItemWidth; j++)
+			{
+				InventorySlots[j]->IsDisplayWidgetActive = true;
+
+				for(int k = j; k < CurrentSlot->SlotItem.ItemHeight; k++)
+				{
+					InventorySlots[k]->IsDisplayWidgetActive = true;
+				}
+			}
+		}
+	}
 }
 
 void UJigsawInventoryWidget::ConstructInitialSlots()
@@ -55,7 +79,7 @@ void UJigsawInventoryWidget::ConstructInitialSlots()
 	InventoryGrid->ClearChildren();
 	InventorySlots.Empty();
 	
-	for(int i = 0; i < InventoryComp->GetTotalSlots(); i++)
+	for(int i = 0; i < InventoryComp->GetBasicSlotAmount(); i++)
 	{
 		// Did we reach the maximum amount of slots in the current row?
 		if(CurrentColumn == InventoryComp->GetMaxSlotsPerRow())
@@ -69,7 +93,8 @@ void UJigsawInventoryWidget::ConstructInitialSlots()
 		{
 			// First we set all the required information for the slot
 			CurrentSlot->OwningInventoryWidget = this;
-
+			CurrentSlot->SlotIndex = i;
+			
 			// And then we want to add it to the grid panel as well as the TArray so we can keep track of it
 			InventorySlots.Add(CurrentSlot);
 			InventoryGrid->AddChildToUniformGrid(CurrentSlot, CurrentRow, CurrentColumn);
@@ -82,6 +107,8 @@ void UJigsawInventoryWidget::ConstructInitialSlots()
 			return;
 		}
 	}
+
+	RefreshAllSlots();
 }
 
 void UJigsawInventoryWidget::ConstructUseDefinitions()

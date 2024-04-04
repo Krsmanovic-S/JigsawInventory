@@ -37,7 +37,7 @@ protected:
 private:
 	
 	TObjectPtr<UJigsawInventoryComponent> InventoryComp;
-
+	
 	/* Grid where all the slots are added */
 	UPROPERTY(BlueprintReadWrite, Category = "Inventory Widget", meta = (BindWidget, AllowPrivateAccess = true))
 	TObjectPtr<UUniformGridPanel> InventoryGrid;

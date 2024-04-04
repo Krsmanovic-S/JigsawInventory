@@ -7,8 +7,10 @@
 #include "Data/JigsawEnumsAndStructs.h"
 #include "InventorySlotWidget.generated.h"
 
+class UMenuAnchor;
 class USizeBox;
 class UImage;
+class UItemDisplayWidget;
 
 /**
  * 
@@ -19,6 +21,7 @@ class COMPLETEJIGSAWINVENTORY_API UInventorySlotWidget : public UUserWidget
 	GENERATED_BODY()
 
 	friend class UJigsawInventoryWidget;
+	friend class UItemDisplayWidget;
 	
 public:
 
@@ -31,9 +34,6 @@ private:
 	
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UImage> SlotImage;
-
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UImage> ItemImage;
 	
 	UPROPERTY()
 	TObjectPtr<UJigsawInventoryWidget> OwningInventoryWidget;
@@ -53,4 +53,9 @@ private:
 	/* What item is in this slot */
 	UPROPERTY(BlueprintReadOnly, Category = "Inventory Slot", meta = (AllowPrivateAccess = true))
 	FItemStruct SlotItem;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UMenuAnchor> SlotMenuAnchor;
+	
+	bool IsDisplayWidgetActive = false;
 };

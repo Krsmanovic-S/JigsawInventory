@@ -21,9 +21,30 @@ class COMPLETEJIGSAWINVENTORY_API UJigsawInventoryComponent : public UActorCompo
 public:
 	UJigsawInventoryComponent();
 
-	FORCEINLINE int32 GetTotalSlots() const { return TotalSlots; }
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+	
+	UFUNCTION(Server, Reliable, BlueprintCallable, Category = "Jigsaw Inventory Functions")
+	void Server_AddItem(FItemStruct ItemToAdd);
+
+	static TPair<int32, int32> GetIndexRangeForItem(const FItemStruct& InItem);
+	
+	void AssignItemToSlots(const int32& FirstSlot, const FItemStruct& ItemToAssign);
+	
+	bool CanItemFitInSlot(int32 IndexToCheck, const FItemStruct& InItem) const;
+	
+	UFUNCTION(BlueprintCallable, Category = "Jigsaw Inventory Functions")
+	bool IsOwnerOnServer() const;
+	
+	UFUNCTION(NetMulticast, Reliable, Category = "Jigsaw Inventory Functions")
+	void Multicast_UpdateInventoryUI();
+	
+	UFUNCTION(Category = "Jigsaw Inventory Functions")
+	void OnRep_CurrentItems();
+	
+	FORCEINLINE int32 GetBasicSlotAmount() const { return BasicSlotAmount; }
 	FORCEINLINE int32 GetMaxSlotsPerRow() const { return MaxSlotsPerRow; }
 	FORCEINLINE UJigsawInventoryInfo* GetInventoryData() const { return InventoryData; }
+	FORCEINLINE TArray<FItemStruct> GetCurrentItems() const { return CurrentItems; } 
 	
 protected:
 	virtual void BeginPlay() override;
@@ -33,7 +54,7 @@ protected:
 private:
 
 	UPROPERTY(EditAnywhere, Category = "Jigsaw Inventory Settings")
-	int32 TotalSlots = 20;
+	int32 BasicSlotAmount = 20;
 
 	UPROPERTY(EditAnywhere, Category = "Jigsaw Inventory Settings")
 	int32 MaxSlotsPerRow = 5;
@@ -46,26 +67,30 @@ private:
 	 * starts.  Uses the custom row struct to find items by name inside the ItemDataTable. 
 	 * We cannot use TPair or TTuple here because they cannot be exposed to blueprints
 	 */
-	UPROPERTY(EditAnywhere, Category = "Inventory")
+	UPROPERTY(EditAnywhere, Category = "Jigsaw Inventory")
 	TArray<FItemRowStruct> DefaultItems;
 	
-	UPROPERTY()
+	UPROPERTY(ReplicatedUsing = OnRep_CurrentItems, BlueprintReadOnly,
+		Category = "Jigsaw Inventory", meta = (AllowPrivateAccess = true))
 	TArray<FItemStruct> CurrentItems;
 
 public:
 	
-	UPROPERTY(BlueprintCallable, Category = "Jigsaw Inventory Component")
+	UPROPERTY(BlueprintCallable, Category = "Jigsaw Inventory")
 	FInventoryUpdated OnInventoryUpdated;
 
-	UPROPERTY(BlueprintAssignable, BlueprintCallable, Category = "Jigsaw Inventory Component")
+	UPROPERTY(BlueprintAssignable, BlueprintCallable, Category = "Jigsaw Inventory")
 	FInventoryOpened OnInventoryOpened;
-	
-	UPROPERTY(BlueprintReadWrite, Category = "Jigsaw Inventory Component")
-	bool IsInventoryOpen = false;
 
-	UPROPERTY(BlueprintReadWrite, Category = "Jigsaw Inventory Component")
+	UPROPERTY(BlueprintReadWrite, Category = "Jigsaw Inventory")
 	bool HalveStackKeyPressed = false;
 
-	UPROPERTY(BlueprintReadWrite, Category = "Jigsaw Inventory Component")
+	UPROPERTY(BlueprintReadWrite, Category = "Jigsaw Inventory")
 	bool SplitKeyPressed = false;
+
+	/* Used for keeping track of whether an addition of an item was successful or only partial */
+	UPROPERTY(BlueprintReadOnly, Category = "Inventory", meta = (AllowPrivateAccess = true))
+	int32 LastAddedItemStack = 0;
+
+	void DebugInventory();
 };

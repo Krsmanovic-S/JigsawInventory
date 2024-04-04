@@ -7,8 +7,11 @@
 #include "Data/JigsawEnumsAndStructs.h"
 #include "ItemDisplayWidget.generated.h"
 
+class UInventorySlotWidget;
+class UTextBlock;
 class UImage;
 class USizeBox;
+
 /**
  * 
  */
@@ -21,7 +24,8 @@ public:
 
 	virtual void NativeConstruct() override;
 
-	void InitializeDisplayWidget(const int32& InSlotSize, const FItemStruct& InItem) const;
+	UFUNCTION(BlueprintCallable, Category = "Item Display Widget Functions")
+	void InitializeDisplayWidget(const int32 SlotSize, const UInventorySlotWidget* OwningSlot) const;
 
 private:
 
@@ -29,5 +33,8 @@ private:
 	TObjectPtr<USizeBox> RootSizeBox;
 
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UImage> DisplayedItemThumbnail;	
+	TObjectPtr<UImage> DisplayedItemThumbnail;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UTextBlock> DisplayedItemStack;
 };
